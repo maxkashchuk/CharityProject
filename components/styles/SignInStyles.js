@@ -4,7 +4,7 @@ const reg_svg_style = "M0,192L48,208C96,224,192,256,288,256C384,256,480,224,576,
 
 const reg_styles = StyleSheet.create({
   reg_btn_title_style: {
-    color: "#bbb7ff"   
+    color: "#bbb7ff"
   },
   reg_btn_border_style: {
     borderColor: "#6c63fe",

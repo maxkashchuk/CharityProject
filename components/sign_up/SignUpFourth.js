@@ -4,7 +4,9 @@ import OutlineInput from "react-native-outline-input";
 import IconMCI from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function SignUpFourth(props) {
-  let [nickname, setNickname] = useState("");
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  //let [nickname, setNickname] = useState("");
 
   function nicknameSet(e)
   {
@@ -26,10 +28,10 @@ export default function SignUpFourth(props) {
     >
       <View>
         <View>
-          <OutlineInput
-            value={nickname}
-            onChangeText={(e) => nicknameSet(e)}
-            label="Nickname"
+        <OutlineInput
+            value={name}
+            onChangeText={(e) => setName(e)}
+            label="Name"
             activeValueColor="#6c63fe"
             activeBorderColor="#6c63fe"
             activeLabelColor="#6c63fe"
@@ -38,21 +40,20 @@ export default function SignUpFourth(props) {
             passiveValueColor="#bbb7ff"
           />
         </View>
-        
-        <View style={{flexDirection: "row", top: "10%", justifyContent: "center"}}>
-          <Text style={{right: "5%"}}>
-            {<IconMCI name="form-textbox" size={21} color="#6c63fe" />}
-          </Text>
-          <Text style={{fontSize: 16, color: "#6c63fe"}}>
-            Your nickname will be 
-          </Text>
+        <View style={{ top: "30%" }}>
+          <OutlineInput
+            value={surname}
+            onChangeText={(e) => setSurname(e)}
+            label="Surname"
+            activeValueColor="#6c63fe"
+            activeBorderColor="#6c63fe"
+            activeLabelColor="#6c63fe"
+            passiveBorderColor="#bbb7ff"
+            passiveLabelColor="#bbb7ff"
+            passiveValueColor="#bbb7ff"
+          ></OutlineInput>
+          
         </View>
-        <View style={{top: "60%"}}>
-        <Text style={{fontSize: 24, fontStyle: "italic", fontWeight: "bold", color: "#bbb7ff", alignSelf: "center"}}>
-            {" " + nickname}
-          </Text>
-        </View>
-        
       </View>
     </SafeAreaView>
   );

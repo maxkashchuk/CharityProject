@@ -59,7 +59,7 @@ export default function SignIn(props) {
                 <OutlineInput
                   value={email}
                   onChangeText={(e) => setEmail(e)}
-                  label="Username"
+                  label="Email"
                   activeValueColor="#6c63fe"
                   activeBorderColor="#6c63fe"
                   activeLabelColor="#6c63fe"
@@ -115,9 +115,9 @@ export default function SignIn(props) {
                 <Text
                   onPress={(e) => loadSignUp(e)}
                   
-                  style={
-                    reg_styles.reg_btn_title_style,
-                    reg_styles.reg_btn_border_style,
+                  style={ 
+                    reg_styles.reg_btn_title_style, 
+                    reg_styles.reg_btn_border_style, 
                     { width: Dimensions.get("window").width / 100 * 30 }
                   }
                 >
@@ -145,8 +145,7 @@ export default function SignIn(props) {
         </Svg>
         </View>
         <ImageBackground
-          style={{ alignSelf: "center" }}
-          style={{ width: Dimensions.get("window").width, height: "50%" }}
+          style={{ alignSelf: "center", width: Dimensions.get("window").width, height: "50%" }}
           source={require("./images/charity_logo.gif")}
         />
       </ImageBackground>
