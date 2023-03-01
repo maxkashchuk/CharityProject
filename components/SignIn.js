@@ -115,7 +115,7 @@ export default function SignIn(props) {
                 <Text
                   onPress={(e) => loadSignUp(e)}
                   
-                  style={ 
+                  style={
                     reg_styles.reg_btn_title_style, 
                     reg_styles.reg_btn_border_style, 
                     { width: Dimensions.get("window").width / 100 * 30 }
