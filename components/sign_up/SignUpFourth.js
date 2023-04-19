@@ -6,15 +6,6 @@ import IconMCI from "react-native-vector-icons/MaterialCommunityIcons";
 export default function SignUpFourth(props) {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
-  //let [nickname, setNickname] = useState("");
-
-  function nicknameSet(e)
-  {
-    if(e.length <= 20)
-    {
-      setNickname(e);
-    }
-  }
 
   return (
     <SafeAreaView
