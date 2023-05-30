@@ -3,9 +3,7 @@ import { useState } from "react";
 import RadioButtonRN from "radio-buttons-react-native";
 import IconI from "react-native-vector-icons/Ionicons";
 
-export default function SignUpThird(props) {
-  let [gender, setGender] = useState("");
-
+export default function SignUpThird({ setGender }) {
   const data = [
     {
       label: "Male",
@@ -17,7 +15,6 @@ export default function SignUpThird(props) {
 
   function genderSet(e) {
     setGender(e.label);
-    console.log(gender);
   }
 
   return (
@@ -30,7 +27,15 @@ export default function SignUpThird(props) {
         height: Dimensions.get("window").height,
       }}
     >
-      <RadioButtonRN deactiveColor="transparent" textStyle={{color: "#bbb7ff"}} boxStyle={{borderColor: "#6c63fe"}} icon={<IconI name="ios-checkmark" size={25} color="#6c63fe" />} animationTypes={['pulse', 'rotate']} data={data} selectedBtn={(e) => genderSet(e)} />
+      <RadioButtonRN
+        deactiveColor="transparent"
+        textStyle={{ color: "#bbb7ff" }}
+        boxStyle={{ borderColor: "#6c63fe" }}
+        icon={<IconI name="ios-checkmark" size={25} color="#6c63fe" />}
+        animationTypes={["pulse", "rotate"]}
+        data={data}
+        selectedBtn={(e) => genderSet(e)}
+      />
     </SafeAreaView>
   );
 }

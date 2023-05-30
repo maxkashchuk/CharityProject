@@ -1,10 +1,4 @@
-import {
-  SafeAreaView,
-  ImageBackground,
-  Dimensions,
-  View,
-  Text,
-} from "react-native";
+import { SafeAreaView, ImageBackground, Dimensions, View } from "react-native";
 import { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SignUpFirst from "../sign_up/SignUpFirst";
@@ -18,11 +12,20 @@ import { reg_styles } from "../styles/SignUpStyles";
 import IconMI from "react-native-vector-icons/MaterialIcons";
 import { TabActions } from "@react-navigation/native";
 
+import UserService from "../../Service/UserService";
+
 const Tab = createBottomTabNavigator();
 
 let pages = 1;
 
 export default function SignUpNavigation(props) {
+  const [name, setName] = useState(null);
+  const [surname, setSurname] = useState(null);
+  const [date, setDate] = useState(null);
+  const [gender, setGender] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [image, setImage] = useState(null);
 
   let [complete, setComplete] = useState(0.2);
 
@@ -42,9 +45,21 @@ export default function SignUpNavigation(props) {
         pages -= 1;
         break;
       case 2:
-        if(pages < 5 )
-        {
+        if (pages < 5) {
           pages += 1;
+        } else {
+          const user = {
+            name: name,
+            surname: surname,
+            email: email,
+            password: password,
+            date: date, // check it "2023-05-20T10:03:17.249Z"
+            avatar: "data:image/jpeg;base64," + image,
+            gender: gender == "Male" ? true : false,
+          };
+          UserService.userSignUp(user).then((res) => {
+            res.status === 200 ? props.navigation.goBack() : null;
+          });
         }
         break;
     }
@@ -119,11 +134,30 @@ export default function SignUpNavigation(props) {
               },
             }}
           >
-            <Tab.Screen name="SignUpFirst" component={SignUpFirst} />
-            <Tab.Screen name="SignUpSecond" component={SignUpSecond} />
-            <Tab.Screen name="SignUpThird" component={SignUpThird} />
-            <Tab.Screen name="SignUpFourth" component={SignUpFourth} />
-            <Tab.Screen name="SignUpFifth" component={SignUpFifth} />
+            <Tab.Screen
+              name="SignUpFirst"
+              children={() => (
+                <SignUpFirst setName={setName} setSurname={setSurname} />
+              )}
+            />
+            <Tab.Screen
+              name="SignUpSecond"
+              children={() => <SignUpSecond setDate={setDate} />}
+            />
+            <Tab.Screen
+              name="SignUpThird"
+              children={() => <SignUpThird setGender={setGender} />}
+            />
+            <Tab.Screen
+              name="SignUpFourth"
+              children={() => (
+                <SignUpFourth setEmail={setEmail} setPassword={setPassword} />
+              )}
+            />
+            <Tab.Screen
+              name="SignUpFifth"
+              children={() => <SignUpFifth setImage={setImage} />}
+            />
           </Tab.Navigator>
           <View
             style={{
