@@ -54,12 +54,12 @@ const PostService = {
 
     searchName: async function(body)
     {   
-        return await axios.get(baseRequestUrl() + '/api/posthelp/postsearchusername', body);
+        return await axios.post(baseRequestUrl() + '/api/posthelp/postsearchusername', body);
     },
 
     searchSurname: async function(body)
     {   
-        return await axios.get(baseRequestUrl() + '/api/posthelp/postsearchusersurname', body);
+        return await axios.post(baseRequestUrl() + '/api/posthelp/postsearchusersurname', body);
     }
 }
 

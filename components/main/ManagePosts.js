@@ -7,15 +7,23 @@ import PostCarousel from "../postcards/PostCarousel";
 import { Button } from "react-native-paper";
 import IconMaterial from "react-native-vector-icons/MaterialCommunityIcons";
 import IconFontAwesome from "react-native-vector-icons/FontAwesome";
+import { ActivityIndicator } from 'react-native-paper';
+import IconU from "react-native-vector-icons/FontAwesome";
 
 export default function ManagePosts(props) {
   const [posts, setPosts] = useState();
 
   const [activeSlide, setActiveSlide] = useState(0);
 
+  const [showModify, setShowModify] = useState();
+
+  const [showCircle, setShowCircle] = useState(true);
+
   let refCarousel = useRef();
 
   async function loadPosts() {
+    setShowModify(undefined);
+    setShowCircle(true);
     return await PostService.userPostsGet(
       await UserService.GetUser().then((res) => {
         return res;
@@ -28,9 +36,25 @@ export default function ManagePosts(props) {
   };
 
   async function postDelete() {
-    await PostService.postDelete(posts[activeSlide].id).then((res) => {
-      refCarousel.snapToItem(0);
-      setPosts(posts.reverse().splice(activeSlide, 1));
+    console.log(activeSlide);
+    await PostService.postDelete(activeSlide !== 0 ? posts[activeSlide-1].id : posts[0].id).then((res) => {
+      // console.log(posts);
+      if(posts.length === 1)
+      {
+        setPosts([]);
+        setShowModify(0);
+        return;
+      }
+      if(activeSlide === 0)
+      {
+        setPosts(posts.reverse().splice(0, 1));
+        return;
+      }
+      refCarousel.snapToItem(activeSlide-1);
+      posts.length === 1 ? setPosts([]) :
+      setPosts(posts.reverse().splice(activeSlide-1, 1));
+      console.log(activeSlide);
+      // console.log(activeSlide);
     });
   }
 
@@ -42,9 +66,14 @@ export default function ManagePosts(props) {
   }
 
   useEffect(() => {
+    // setShowCircle(true);
     loadPosts().then((res) => {
+      setShowCircle(false);
       setPosts(res.data);
+      setShowModify(res.data.length);
     });
+    // setShowCircle(false);
+
   }, []);
 
   return (
@@ -67,6 +96,9 @@ export default function ManagePosts(props) {
           Manage posts
         </Text>
       </View>
+      {showCircle == true && <View style={{marginTop: 150}}>
+        <ActivityIndicator animating={true} size={120} />
+        </View>}
       {posts !== undefined && (
         <View>
           <View style={{ marginTop: 20 }}>
@@ -79,11 +111,13 @@ export default function ManagePosts(props) {
               sliderWidth={415}
               itemWidth={250}
               onSnapToItem={(index) => {
+                console.log(index);
                 setActiveSlide(index);
               }}
             />
           </View>
-          <View>
+          {(showModify !== 0 && showModify !== undefined) && <View>
+            <View>
             <Text
               style={{ color: "#6c63fe", fontSize: 24, alignSelf: "center" }}
             >
@@ -119,7 +153,17 @@ export default function ManagePosts(props) {
             >
               <IconFontAwesome name="pencil" size={80} color="#6c63fe" />
             </Button>
-          </View>
+          </View></View>}
+          {showModify === 0 && <View>
+            <Text style={{fontSize: 42, alignSelf: 'center', marginTop: 180, color: "#6c63fe"}}>Posts not found</Text>
+        <IconU
+        style={{alignSelf: 'center'}}
+            name="times-rectangle"
+            size={120}
+            color="#6c63fe"
+            onPress={() => setSearch(null)}
+          />
+            </View>}
         </View>
       )}
     </ScrollView>

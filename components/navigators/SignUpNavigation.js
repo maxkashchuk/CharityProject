@@ -27,7 +27,7 @@ export default function SignUpNavigation(props) {
   const [password, setPassword] = useState(null);
   const [image, setImage] = useState(null);
 
-  let [complete, setComplete] = useState(0.2);
+  let [complete, setComplete] = useState(0.20);
 
   const SUFIR = TabActions.jumpTo("SignUpFirst");
 

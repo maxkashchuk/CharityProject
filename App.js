@@ -8,9 +8,10 @@ import { StatusBar } from "react-native";
 import PostInfo from './components/postcards/PostInfo';
 import Profile from './components/Profile';
 import PostUpdate from './components/PostUpdate';
-// import {LogBox} from 'react-native';
+import Transition from './components/Transition';
+import {LogBox} from 'react-native';
 
-// LogBox.ignoreAllLogs();
+LogBox.ignoreAllLogs();
 
 const Stack = createNativeStackNavigator();
 
@@ -24,7 +25,7 @@ export default function App() {
         animated={true}
       />
       <Stack.Navigator
-        initialRouteName="SignIn"
+        initialRouteName="Transition"
         screenOptions={{ headerShown: false }}
       >
         <Stack.Screen name="SignIn" component={SignIn} />
@@ -33,6 +34,7 @@ export default function App() {
         <Stack.Screen name="PostInfo" component={PostInfo} />
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="PostUpdate" component={PostUpdate} />
+        <Stack.Screen name="Transition" component={Transition} />
       </Stack.Navigator>
     </NavigationContainer>    
   );

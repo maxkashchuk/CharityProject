@@ -9,6 +9,7 @@ import MainPost from "./postcards/MainPost";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import PostCarousel from "./postcards/PostCarousel";
 import UserService from "../Service/UserService";
+import { ActivityIndicator } from 'react-native-paper';
 
 export default function Profile(props) {
   const [user, setUser] = useState(props.route.params.user);
@@ -145,6 +146,9 @@ export default function Profile(props) {
         </View>
       </View>
       <Divider />
+      {posts == undefined && <View style={{marginTop: 100}}>
+        <ActivityIndicator animating={true} size={120} />
+        </View>}
       {posts !== undefined && (
         <View style={{ marginTop: 20 }}>
           <Carousel

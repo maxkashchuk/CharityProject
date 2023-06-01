@@ -13,6 +13,7 @@ import RangeSlider, { Slider } from "react-native-range-slider-expo";
 import PostService from "../../Service/PostService";
 import MainPost from "../postcards/MainPost";
 import UserService from "../../Service/UserService";
+import { ActivityIndicator } from 'react-native-paper';
 
 export default function MainPosts(props) {
   const [search, setSearch] = useState();
@@ -33,6 +34,10 @@ export default function MainPosts(props) {
 
   const [postsData, setPostsData] = useState();
 
+  const [showCircle, setShowCircle] = useState(true);
+
+  const [postNumber, setPostNumber] = useState();
+
   useEffect(() => {
     searchPosts();
   }, []);
@@ -44,6 +49,8 @@ export default function MainPosts(props) {
   }
 
   async function searchPosts() {
+    setPostNumber(undefined);
+    setShowCircle(true);
     setPostsData(undefined);
     let searchData = {
       header: "string",
@@ -60,14 +67,16 @@ export default function MainPosts(props) {
     switch (select) {
       case "Header":
         searchData.header = search;
-        await PostService.searchHeader(searchData).then((res) =>
-          setPostsData(res.data)
+        await PostService.searchHeader(searchData).then((res) =>{setShowCircle(false);
+          setPostNumber(res.data.length);
+          setPostsData(res.data)}
         );
         break;
       case "Description":
         searchData.description = search;
-        await PostService.searchDescritpion(searchData).then((res) =>
-          setPostsData(res.data)
+        await PostService.searchDescritpion(searchData).then((res) =>{setShowCircle(false);
+          setPostNumber(res.data.length);
+          setPostsData(res.data)}
         );
         break;
       case "Coordinates":
@@ -75,33 +84,43 @@ export default function MainPosts(props) {
           searchData.latitude = coordinate.latitude;
           searchData.longitude = coordinate.longitude;
           searchData.distance = range;
-          await PostService.searchCoordinates(searchData).then((res) =>
-            setPostsData(res.data)
-          );
+          await PostService.searchCoordinates(searchData).then((res) =>{setShowCircle(false);
+            setPostNumber(res.data.length);
+            setPostsData(res.data)}
+          ).catch(() => {setShowCircle(false);
+          setPostNumber(0);});
         }
         break;
       case "Rating":
         searchData.ratingStart = fromValue;
         searchData.ratingEnd = toValue;
-        await PostService.searchRating(searchData).then((res) =>
-          setPostsData(res.data)
+        await PostService.searchRating(searchData).then((res) =>{setShowCircle(false);
+          setPostNumber(res.data.length);
+          setPostsData(res.data)}
         );
+        break;
       case "All":
-        await PostService.searchPosts(searchData).then((res) =>
-          setPostsData(res.data)
+        await PostService.searchPosts(searchData).then((res) =>{setShowCircle(false);
+          setPostNumber(res.data.length);
+          setPostsData(res.data)}
         );
+        break;
       case "Name":
         searchData.name = search;
-        await PostService.searchName(searchData).then((res) =>
-          setPostsData(res.data)
+        await PostService.searchName(searchData).then((res) =>{setShowCircle(false);
+          setPostNumber(res.data.length);
+          setPostsData(res.data)}
         );
+        break;
       case "Surname":
         searchData.surname = search;
-        await PostService.searchSurname(searchData).then((res) =>
-          setPostsData(res.data)
+        await PostService.searchSurname(searchData).then((res) => {setShowCircle(false);
+          setPostNumber(res.data.length);
+          setPostsData(res.data)}
         );
         break;
     }
+    // console.log(postsData);
   }
 
   return (
@@ -439,6 +458,19 @@ export default function MainPosts(props) {
           </View>
         )}
       </Banner>
+      {showCircle === true && <View style={{marginTop: 150}}>
+        <ActivityIndicator animating={true} size={120} />
+      </View>}
+      {postNumber === 0 && <View>
+        <Text style={{fontSize: 42, alignSelf: 'center', marginTop: 180, color: "#6c63fe"}}>Posts not found</Text>
+        <IconU
+        style={{alignSelf: 'center'}}
+            name="times-rectangle"
+            size={120}
+            color="#6c63fe"
+            onPress={() => setSearch(null)}
+          />
+        </View>}
       <ScrollView>
         <MainPost navigation={props.navigation} postsData={postsData} />
         <View style={{ marginBottom: 80 }} />

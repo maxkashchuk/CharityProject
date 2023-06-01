@@ -16,6 +16,7 @@ import IconAntDesign from "react-native-vector-icons/AntDesign";
 import { Chip } from "react-native-paper";
 import UserService from "../../Service/UserService";
 import PostService from "../../Service/PostService";
+import { Snackbar } from 'react-native-paper';
 
 export default function AddPosts() {
   const [header, setHeader] = useState();
@@ -40,6 +41,14 @@ export default function AddPosts() {
   const [markerShow, setMarkerShow] = useState(false);
 
   const [currentTag, setCurrentTag] = useState();
+
+  const [visible, setVisible] = useState(false);
+
+  const [snackBarText, setSnackBarText] = useState();
+
+  const onToggleSnackBar = () => setVisible(!visible);
+
+  const onDismissSnackBar = () => setVisible(false);
 
   function isNumeric(n) {
     let num = !isNaN(parseFloat(n)) && isFinite(n);
@@ -89,11 +98,20 @@ export default function AddPosts() {
       longtitude: markerShow === false ? null : cordinate.longitude,
       tags: tags,
     };
-    PostService.postAdd(post);
+    await PostService.postAdd(post).then((res) => {setSnackBarText("Post was succesfully added"); onToggleSnackBar()})
+    .catch((res) => {setSnackBarText("Check your data carefully"); onToggleSnackBar()});
   }
 
   return (
     <ScrollView style={{ backgroundColor: "white" }}>
+      <Snackbar
+      style={{backgroundColor: "#6c63fe", width: 300, alignSelf: 'center'}}
+        wrapperStyle={{ top: 150 }}
+        visible={visible}
+        onDismiss={onDismissSnackBar}
+        >
+        <Text style={{marginLeft: 30, fontSize: 18}}>{snackBarText}</Text>
+      </Snackbar>
       <View
         style={{
           backgroundColor: "#6c63fe",
@@ -133,7 +151,7 @@ export default function AddPosts() {
           title="Add post"
           onPress={() => addPostRequest()}
         />
-        <View style={{ marginTop: 20 }}>
+        <View style={{ marginTop: 80 }}>
           <OutlineInput
             value={header}
             onChangeText={(e) => {

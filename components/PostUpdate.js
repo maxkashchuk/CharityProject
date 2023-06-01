@@ -15,6 +15,8 @@ import IconFontisto from "react-native-vector-icons/Fontisto";
 import IconAntDesign from "react-native-vector-icons/AntDesign";
 import { Chip } from "react-native-paper";
 import PostService from "../Service/PostService";
+import { Snackbar } from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 
 export default function PostUpdate(props) {
   const [header, setHeader] = useState();
@@ -42,12 +44,23 @@ export default function PostUpdate(props) {
 
   const [postData, setPostData] = useState(false);
 
+  const [showCircle, setShowCircle] = useState(true);
+
+  const [visible, setVisible] = useState(false);
+
+  const [snackBarText, setSnackBarText] = useState();
+
+  const onToggleSnackBar = () => setVisible(!visible);
+
+  const onDismissSnackBar = () => setVisible(false);
+
   async function loadPost() {
     return await PostService.postGet(props.route.params.id);
   }
 
   useEffect(() => {
     loadPost().then((res) => {
+      setShowCircle(false);
       setHeader(res.data.header);
       setDescription(res.data.description);
       if (res.data.images !== null) {
@@ -103,6 +116,7 @@ export default function PostUpdate(props) {
   }
 
   async function updatePostRequest() {
+    console.log(markerShow);
     let post = {
       money: money === "" ? null : money,
       header: header,
@@ -112,11 +126,20 @@ export default function PostUpdate(props) {
       longtitude: markerShow === false ? null : cordinate.longitude,
       tags: tags,
     };
-    await PostService.postUpdate(props.route.params.id, post);
+    await PostService.postUpdate(props.route.params.id, post).then((res) => {setSnackBarText("Post was succesfully updated"); onToggleSnackBar()})
+    .catch((res) => {setSnackBarText("Check your data carefully"); onToggleSnackBar()});
   }
 
   return (
     <ScrollView style={{ backgroundColor: "white" }}>
+      <Snackbar
+      style={{backgroundColor: "#6c63fe", width: 300, alignSelf: 'center'}}
+        wrapperStyle={{ top: 225 }}
+        visible={visible}
+        onDismiss={onDismissSnackBar}
+        >
+        <Text style={{marginLeft: 30, fontSize: 18}}>{snackBarText}</Text>
+      </Snackbar>
       <View
         style={{
           backgroundColor: "#6c63fe",
@@ -135,9 +158,33 @@ export default function PostUpdate(props) {
           Update Post
         </Text>
       </View>
+      {showCircle === true && <View style={{marginTop: 100}}>
+        <ActivityIndicator animating={true} size={120} />
+        </View>}
       {postData === true && (
         <View>
           <View style={{ padding: 5, marginTop: 20 }}>
+          <Button
+              type="outline"
+              icon={
+                <IconEntypo
+                  name="back"
+                  size={20}
+                  color="#6c63fe"
+                  style={{ margin: 5 }}
+                />
+              }
+              buttonStyle={{
+                width: 300,
+                alignSelf: "center",
+                borderColor: "#6c63fe",
+                borderWidth: 1,
+              }}
+              titleStyle={{ color: "#6c63fe" }}
+              title="Go back"
+              onPress={() => console.log(props.navigation.goBack())}
+            />
+            <View style={{marginTop: 30}}>
             <Button
               type="outline"
               icon={
@@ -158,7 +205,8 @@ export default function PostUpdate(props) {
               title="Update post"
               onPress={() => updatePostRequest()}
             />
-            <View style={{ marginTop: 20 }}>
+            </View>
+            <View style={{ marginTop: 80 }}>
               <OutlineInput
                 value={header}
                 onChangeText={(e) => {
@@ -343,8 +391,8 @@ export default function PostUpdate(props) {
                 }
                 onPress={(e) => {
                   setCordinate({
-                    latitude: e.nativeEvent.coordinate.Lattitude,
-                    longitude: e.nativeEvent.coordinate.Longtitude,
+                    latitude: e.nativeEvent.coordinate.latitude,
+                    longitude: e.nativeEvent.coordinate.longitude,
                     longitudeDelta: 0.0922,
                     latitudeDelta: 0.0421,
                   });
@@ -448,8 +496,7 @@ export default function PostUpdate(props) {
               />
               <Button
                 type="outline"
-                onPressOut={() =>
-                  currentTag !== undefined ? setTags([]) : null
+                onPressOut={() => setTags([])
                 }
                 icon={
                   <IconMaterialI
